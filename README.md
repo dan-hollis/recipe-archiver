@@ -14,6 +14,10 @@ A web application that leverages the Spoonacular API to extract and parse recipe
 
 * Clean and user-friendly interface
 
+### Preview
+
+See it in action [here](https://recipes.clintonradio.com/)
+
 ## Note
 
 Requires a [Spoonacular API key](https://spoonacular.com/food-api/pricing)
