@@ -13,7 +13,6 @@ export default async function post(endpoint, data) {
         });
         return response;
     } catch (error) {
-        console.error(`Error posting to ${endpoint}:`, error);
         throw error;
     }
 }

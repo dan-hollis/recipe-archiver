@@ -13,7 +13,6 @@ export default async function getUserProfile(userId) {
 
         return response;
     } catch (error) {
-        console.error('Error fetching user profile:', error);
         throw error;
     }
 }

@@ -81,6 +81,7 @@ def create_app(config, debug=False):
     app.config['JWT_SECRET_KEY'] = config['flask']['jwt_secret_key']
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
     app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
+    app.config['JWT_REMEMBER_ME_EXPIRES'] = timedelta(days=90)
     app.config['JWT_IDENTITY_CLAIM'] = 'sub'
     app.config['JWT_ERROR_MESSAGE_KEY'] = 'error'
 

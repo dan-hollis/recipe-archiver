@@ -3,6 +3,8 @@ import fetchWithAuth from "../fetchWithAuth";
 
 export default async function addRecipe(recipeData) {
     try {
+        const token = localStorage.getItem('token');
+
         const response = await fetchWithAuth(`${API_URL}/api/recipes/add`, {
             method: 'POST',
             headers: {
@@ -12,9 +14,12 @@ export default async function addRecipe(recipeData) {
             credentials: 'include'
         });
 
+        if (!response.success) {
+            throw new Error(response.message || 'Failed to add recipe');
+        }
+
         return response;
     } catch (error) {
-        console.error('Error adding recipe:', error);
         throw error;
     }
 }

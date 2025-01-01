@@ -78,8 +78,11 @@ export default function Login() {
 			}
 		} catch (err) {
 			if (isMounted) {
-				console.error('Login error:', err);
 				setError(err.message || 'An error occurred during login');
+				
+				localStorage.removeItem('token');
+				localStorage.removeItem('refresh_token');
+				setToken(null);
 			}
 		}
 	};

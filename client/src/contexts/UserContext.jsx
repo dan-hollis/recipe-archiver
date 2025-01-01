@@ -36,11 +36,9 @@ export const UserProvider = ({ children }) => {
                         setUser(null);
                     }
                 } catch (jwtError) {
-                    console.error('Error decoding JWT:', jwtError);
                     setUser(null);
                 }
             } catch (error) {
-                console.error('Failed to fetch user:', error);
                 setUser(null);
             } finally {
                 setLoading(false);

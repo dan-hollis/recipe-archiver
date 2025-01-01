@@ -52,7 +52,6 @@ const Navbar = memo(function Navbar({ userData }) {
             // Finally navigate
             navigate('/home', { replace: true });
         } catch (error) {
-            console.error('Failed to log out:', error);
             setError('Failed to log out. Please try again.');
         }
     };

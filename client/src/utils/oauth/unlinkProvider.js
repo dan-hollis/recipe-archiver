@@ -14,7 +14,6 @@ export default async function unlinkProvider(provider, password) {
         });
         return response;
     } catch (error) {
-        console.error('Error unlinking provider:', error);
         throw error;
     }
 }

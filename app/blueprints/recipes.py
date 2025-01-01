@@ -154,7 +154,7 @@ def add():
                 return jsonify({
                     'success': False,
                     'message': 'Invalid Spoonacular API Key'
-                }), 401
+                }), 403
             except (SpoonacularQuotaError, SpoonacularRateLimitError) as e:
                 return jsonify({
                     'success': False,
@@ -325,21 +325,36 @@ def get_recipe(recipe_id):
         }), 500
 
 
-@recipes_blueprint.route('/user/recipe-progress', methods=['POST'])
+@recipes_blueprint.route('/user/recipe-progress/<int:recipe_id>', methods=['GET', 'POST'])
 @jwt_required()
-def update_recipe_progress():
+def update_recipe_progress(recipe_id):
     try:
         user_id = get_jwt_identity()
-        data = request.get_json()
-        recipe_id = data.get('recipe_id')
-        checked_ingredients = data.get('checked_ingredients')
-
         user = User.query.get(user_id)
         if not user:
             return jsonify({'success': False, 'message': 'User not found'}), 404
 
-        # Store the progress in the user's profile
-        # You might want to add a new model/table for this
+        if request.method == 'GET':
+            user_progress = UserRecipeProgress.query.filter_by(
+                user_id=user_id,
+                recipe_id=recipe_id
+            ).first()
+
+            return jsonify({
+                'success': True,
+                'checked_ingredients': user_progress.checked_ingredients if user_progress else {}
+            })
+
+        # POST method
+        data = request.get_json()
+        checked_ingredients = data.get('checked_ingredients')
+
+        if checked_ingredients is None:
+            return jsonify({
+                'success': False,
+                'message': 'checked_ingredients is required'
+            }), 400
+
         user_progress = UserRecipeProgress.query.filter_by(
             user_id=user_id,
             recipe_id=recipe_id
@@ -357,6 +372,7 @@ def update_recipe_progress():
 
         db.session.commit()
 
+        logger.info('Updated recipe progress for user %s, recipe %s', user_id, recipe_id)
         return jsonify({'success': True})
 
     except Exception as e:  # pylint: disable=broad-exception-caught

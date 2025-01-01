@@ -53,9 +53,7 @@ export default function EditProfile() {
         const fetchConnectedAccounts = async () => {
             try {
                 const response = await api.getConnectedAccounts();
-                console.log('Connected accounts raw response:', JSON.stringify(response, null, 2));
                 if (response.success) {
-                    console.log('Setting connected accounts:', response.connected_accounts);
                     setConnectedAccounts(response.connected_accounts);
                 }
             } catch (err) {
@@ -344,13 +342,6 @@ export default function EditProfile() {
             </div>
         )
     );
-
-    console.log('Render state:', {
-        showPasswordSection,
-        user: user?.primary_login_method,
-        oauthCount: Object.keys(connectedAccounts).length,
-        connectedAccounts
-    });
 
     return (
         <div className="max-w-3xl mx-auto p-6">

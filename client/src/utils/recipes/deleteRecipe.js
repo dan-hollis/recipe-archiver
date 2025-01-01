@@ -12,7 +12,6 @@ export default async function deleteRecipe(id) {
         });
         return response;
     } catch (error) {
-        console.error(`Error deleting ${id}:`, error);
         throw error;
     }
 }

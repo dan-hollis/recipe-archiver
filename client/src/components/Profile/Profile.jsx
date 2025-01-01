@@ -63,7 +63,6 @@ export default function Profile() {
                         setOtherUserData(response.user);
                     }
                 } catch (error) {
-                    console.error('Failed to fetch user profile:', error);
                     if (mounted) {
                         navigate('/404', { replace: true });
                     }

@@ -8,29 +8,20 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
 
-    const isTokenValid = (token) => {
-        if (!token) return false;
-        try {
-            const { exp } = jwtDecode(token);
-            return Date.now() < exp * 1000; // Check if the token is expired
-        } catch (error) {
-            console.error('Invalid token:', error);
-            return false;
-        }
-    };
-
     useEffect(() => {
         const checkToken = async () => {
             try {
-                if (!isTokenValid(token) && token) {
+                // If token exists but is invalid, try to refresh
+                if (token && !isTokenValid(token)) {
                     const newToken = await api.refreshAccessToken();
                     setToken(newToken);
                     localStorage.setItem('token', newToken);
                 }
             } catch (error) {
-                console.error('Failed to refresh token:', error);
+                // Clear invalid tokens
                 setToken(null);
                 localStorage.removeItem('token');
+                localStorage.removeItem('refresh_token');
             } finally {
                 setLoading(false);
             }
@@ -39,9 +30,28 @@ export const AuthProvider = ({ children }) => {
         checkToken();
     }, [token]);
 
+    // Update localStorage whenever token changes
+    useEffect(() => {
+        if (token) {
+            localStorage.setItem('token', token);
+        } else {
+            localStorage.removeItem('token');
+        }
+    }, [token]);
+
     return (
         <AuthContext.Provider value={{ token, setToken, loading }}>
             {children}
         </AuthContext.Provider>
     );
 };
+
+function isTokenValid(token) {
+    if (!token) return false;
+    try {
+        const decoded = jwtDecode(token);
+        return decoded.exp * 1000 > Date.now();
+    } catch (error) {
+        return false;
+    }
+}

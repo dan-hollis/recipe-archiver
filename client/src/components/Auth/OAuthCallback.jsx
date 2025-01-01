@@ -14,7 +14,6 @@ export default function OAuthCallback() {
     useEffect(() => {
         const handleCallback = async () => {
             try {
-                console.log('Starting OAuth callback processing');
                 const searchParams = new URLSearchParams(location.search);
                 
                 const accessToken = searchParams.get('access_token');
@@ -23,10 +22,7 @@ export default function OAuthCallback() {
                 const userId = searchParams.get('user_id');
                 const error = searchParams.get('error');
 
-                console.log('Received params:', { accessToken, refreshToken, requireMfa, userId, error });
-
                 if (!accessToken || !refreshToken) {
-                    console.error('Missing tokens in callback');
                     toast.error('Authentication failed - missing tokens');
                     navigate('/login');
                     return;
@@ -59,13 +55,11 @@ export default function OAuthCallback() {
                             throw new Error('Failed to fetch user data');
                         }
                     } catch (error) {
-                        console.error('Error fetching user data:', error);
                         toast.error('Failed to load user data');
                         navigate('/login');
                     }
                 }
             } catch (error) {
-                console.error('OAuth callback error:', error);
                 toast.error('Authentication failed');
                 navigate('/login');
             }

@@ -157,7 +157,7 @@ class UserRecipeProgress(db.Model):
         db.ForeignKey('recipe.id', ondelete='CASCADE'),
         nullable=False
     )
-    checked_ingredients = db.Column(JSON)
+    checked_ingredients = db.Column(JSON, nullable=False, default=dict)
     last_updated = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     __table_args__ = (

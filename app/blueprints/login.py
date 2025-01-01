@@ -1,10 +1,11 @@
 import logging
+from datetime import datetime
 
 import requests
 from flask import Blueprint, current_app, jsonify, request
 from flask_bcrypt import check_password_hash
 from flask_jwt_extended import (create_access_token, create_refresh_token,
-                                get_jwt_identity, jwt_required)
+                                get_jwt, get_jwt_identity, jwt_required)
 
 from app.models import User
 
@@ -90,3 +91,16 @@ def refresh():
     current_user = get_jwt_identity()
     new_access_token = create_access_token(identity=current_user)
     return jsonify({'succes': True, 'access_token': new_access_token}), 200
+
+
+@login_blueprint.route('/debug/token', methods=['GET'])
+@jwt_required()
+def debug_token():
+    current_user_id = get_jwt_identity()
+    jwt_data = get_jwt()
+    return jsonify({
+        'user_id': current_user_id,
+        'jwt_data': jwt_data,
+        'now': datetime.now().timestamp(),
+        'token_valid': True
+    })

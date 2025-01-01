@@ -91,7 +91,6 @@ function UsersTable() {
             setError(null);
         } catch (error) {
             setError('Failed to fetch data');
-            console.error('Error:', error);
         } finally {
             setIsLoading(false);
         }

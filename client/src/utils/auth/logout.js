@@ -21,7 +21,6 @@ export default async function logout() {
 
         return { success: true };
     } catch (error) {
-        console.error('Logout error:', error);
         // Still clear storage even if the API call fails
         localStorage.removeItem('user');
         localStorage.removeItem('token');

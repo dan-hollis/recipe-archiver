@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -18,10 +18,6 @@ export default function Signup() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { executeRecaptcha } = useGoogleReCaptcha();
-
-    useEffect(() => {
-        console.log('ReCAPTCHA available:', !!executeRecaptcha);
-    }, [executeRecaptcha]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

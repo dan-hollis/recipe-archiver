@@ -119,7 +119,6 @@ function RecipesTable() {
             setError(null);
         } catch (error) {
             setError('Failed to fetch data');
-            console.error('Error:', error);
         } finally {
             setIsLoading(false);
         }
@@ -150,7 +149,6 @@ function RecipesTable() {
             }
         } catch (error) {
             setError('Failed to delete recipe');
-            console.error('Error:', error);
         } finally {
             setIsLoading(false);
         }

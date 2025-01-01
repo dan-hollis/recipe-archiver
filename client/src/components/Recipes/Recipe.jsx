@@ -22,20 +22,19 @@ export default function Recipe() {
     useEffect(() => {
         const fetchRecipe = async () => {
             try {
-                const [recipeResponse, progressResponse] = await Promise.all([
-                    api.get(`/recipes/${recipeId}`),
-                    api.get(`/recipes/user/recipe-progress/${recipeId}`)
-                ]);
-
+                const recipeResponse = await api.get(`/recipes/${recipeId}`);
                 if (recipeResponse.success) {
                     setRecipe(recipeResponse.recipe);
                     setServings(recipeResponse.recipe.servings);
                     setOriginalServings(recipeResponse.recipe.servings);
                     
-                    // If we have saved progress and no local storage, use the server state
-                    if (progressResponse.success && !localStorage.getItem(localStorageKey)) {
-                        setCheckedIngredients(progressResponse.checked_ingredients);
-                        localStorage.setItem(localStorageKey, JSON.stringify(progressResponse.checked_ingredients));
+                    // Get saved progress after confirming user exists
+                    if (user) {
+                        const progressResponse = await api.get(`/recipes/user/recipe-progress/${recipeId}`);
+                        if (progressResponse.success && progressResponse.checked_ingredients) {
+                            setCheckedIngredients(progressResponse.checked_ingredients);
+                            localStorage.setItem(localStorageKey, JSON.stringify(progressResponse.checked_ingredients));
+                        }
                     }
                 } else {
                     setError(recipeResponse.message);
@@ -48,12 +47,23 @@ export default function Recipe() {
         };
 
         fetchRecipe();
-    }, [recipeId]);
+    }, [recipeId, user]);
 
     useEffect(() => {
         const savedCheckedIngredients = localStorage.getItem(localStorageKey);
         if (savedCheckedIngredients) {
-            setCheckedIngredients(JSON.parse(savedCheckedIngredients));
+            try {
+                const parsed = JSON.parse(savedCheckedIngredients);
+                if (parsed && typeof parsed === 'object') {
+                    setCheckedIngredients(parsed);
+                } else {
+                    // Invalid data structure, clear it
+                    localStorage.removeItem(localStorageKey);
+                }
+            } catch (err) {
+                // Clear invalid JSON from localStorage
+                localStorage.removeItem(localStorageKey);
+            }
         }
     }, [localStorageKey]);
 
@@ -62,8 +72,7 @@ export default function Recipe() {
             if (!user || Object.keys(checkedIngredients).length === 0) return;
             
             try {
-                await api.post('/recipes/user/recipe-progress', {
-                    recipe_id: recipeId,
+                await api.post(`/recipes/user/recipe-progress/${recipeId}`, {
                     checked_ingredients: checkedIngredients
                 });
             } catch (err) {
@@ -71,9 +80,8 @@ export default function Recipe() {
             }
         };
 
-        return () => {
-            syncWithBackend();
-        };
+        // Call syncWithBackend immediately when checkedIngredients changes
+        syncWithBackend();
     }, [user, recipeId, checkedIngredients]);
 
     useEffect(() => {
@@ -117,7 +125,11 @@ export default function Recipe() {
         
         setCheckedIngredients(newCheckedIngredients);
         
-        localStorage.setItem(localStorageKey, JSON.stringify(newCheckedIngredients));
+        try {
+            localStorage.setItem(localStorageKey, JSON.stringify(newCheckedIngredients));
+        } catch (err) {
+            console.error('Failed to save ingredient state:', err);
+        }
     };
 
     const handleDelete = async () => {
@@ -135,7 +147,6 @@ export default function Recipe() {
             }
         } catch (error) {
             toast.error('Error deleting recipe');
-            console.error('Error:', error);
         }
     };
 

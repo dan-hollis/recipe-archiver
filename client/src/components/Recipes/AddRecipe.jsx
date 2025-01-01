@@ -159,12 +159,14 @@ const AddRecipe = () => {
 
         setIsSubmitting(true);
         try {
+        
             const dataToSubmit = {
                 ...formData,
                 overwrite_recipe: !!duplicateRecipeId
             };
 
             const response = await api.addRecipe(dataToSubmit);
+            
             if (response.success) {
                 navigate(`/recipes/${response.recipe_id}`);
             } else if (response.recipe_id) {
@@ -174,8 +176,19 @@ const AddRecipe = () => {
                 setErrors({ submit: response.message || 'Failed to add recipe' });
             }
         } catch (error) {
-            console.error('Error adding recipe:', error);
-            setErrors({ submit: 'An error occurred while adding the recipe' });
+            // Check if tokens were cleared during the request
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                // Redirect to login if tokens are gone
+                navigate('/login', { 
+                    state: { 
+                        from: '/recipes/add',
+                        message: 'Please log in again to continue' 
+                    } 
+                });
+            }
+            setErrors({ submit: error.message || 'An error occurred while adding the recipe' });
         } finally {
             setIsSubmitting(false);
         }

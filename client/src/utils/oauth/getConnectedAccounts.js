@@ -12,7 +12,6 @@ export default async function getConnectedAccounts() {
         });
         return response;
     } catch (error) {
-        console.error('Error fetching connected accounts:', error);
         throw error;
     }
 }

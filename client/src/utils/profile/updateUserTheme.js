@@ -14,7 +14,6 @@ export default async function updateUserTheme(theme) {
 
         return response;
     } catch (error) {
-        console.error('Error updating theme:', error);
         throw error;
     }
 }

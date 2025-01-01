@@ -12,7 +12,6 @@ export default async function get(endpoint) {
         });
         return response;
     } catch (error) {
-        console.error(`Error fetching ${endpoint}:`, error);
         throw error;
     }
 }
