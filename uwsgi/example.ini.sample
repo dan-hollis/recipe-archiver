@@ -1,0 +1,21 @@
+[uwsgi]
+http-socket = 127.0.0.1:7000
+chdir = /path/to/webroot
+home = /path/to/webroot/env
+plugins-dir = /path/to/webroot/uwsgi
+plugins = python310, gevent310
+http-websockets = true
+gevent = 1000
+wsgi-file = wsgi.py
+module = wsgi:app
+callable = app
+processes = 1
+enable-threads = true
+uid = www-data
+gid = www-data
+pid = www-data
+vacuum = true
+die-on-term = true
+master = true
+protocol = http
+gevent-monkey-patch = true

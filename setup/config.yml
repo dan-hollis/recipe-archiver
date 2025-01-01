@@ -1,0 +1,78 @@
+flask:
+  secret_key: 
+  jwt_secret_key: 
+  security_password_salt: 
+  encryption_key: 
+  app_name: recipe_archiver
+  # Maximum time in seconds a password reset token will be valid
+  reset_pass_token_max_age: 1200
+  # List of roles that will have admin privileges
+  admin_roles: 
+    - admin
+  oauth_redirect_url: https://127.0.0.1:5005
+  posts_per_page: 20
+  dev_sockets: 
+    - 127.0.0.1:7000
+  dev_servers: 
+    - 127.0.0.1:5005
+  prod_servers: 
+    - domain.com
+
+mailman:
+  server: 
+  port: 
+  use_tls: 
+  username: 
+  password: 
+  # Timeout in seconds
+  timeout: 60
+
+recaptcha:
+  private_key: 
+  public_key: 
+
+postgres:
+  host: 
+  port: 
+  database: 
+  username: 
+  password: 
+
+redis:
+  host: 
+  port: 
+  username: 
+  password: 
+  session_db: 
+  cache_db: 
+  socket_db: 
+  message_db: 
+  celery_db: 
+
+oauth:
+  discord:
+    client_id: 
+    client_secret: 
+    scope:
+      - identify
+
+logging:
+  version: 1
+  disable_existing_loggers: false
+  formatters:
+    default:
+      format: '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+  handlers:
+    file:
+      class: concurrent_log_handler.ConcurrentRotatingFileHandler
+      filename:
+      maxBytes: 10000000
+      backupCount: 5
+      formatter: default
+      chmod: !!int 0o0660
+    console:
+      class: logging.StreamHandler
+      formatter: default
+  root:
+    level: DEBUG
+    handlers: ['file', 'console']

@@ -1,0 +1,18 @@
+[Unit]
+Description=Recipe Archiver uWSGI Emperor
+After=network.target
+
+[Service]
+ExecStart=/path/to/webroot/recipe-archiver-env/bin/uwsgi --master --emperor /path/to/webroot/uwsgi/
+RuntimeDirectory=uwsgi
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+NotifyAccess=all
+User=www-data
+Group=www-data
+WorkingDirectory=/path/to/webroot
+Environment="PATH=/path/to/webroot/recipe-archiver-env/bin"
+
+[Install]
+WantedBy=multi-user.target
